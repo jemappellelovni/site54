@@ -1,0 +1,22 @@
+local HttpService = game:GetService("HttpService")
+local whitelist = {} -- Tableau pour stocker les joueurs whitelistés
+
+local function handleRequest(request, response)
+	if request.Method == "POST" then
+		local data = HttpService:JSONDecode(request.Body)
+		local playerName = data.playerName
+
+		-- Vérifier si le joueur est déjà whitelisté
+		if whitelist[playerName] then
+			response:send(200, "Le joueur est déjà whitelisté.")
+		else
+			-- Ajouter le joueur à la liste blanche
+			whitelist[playerName] = true
+			response:send(200, "Le joueur a été ajouté à la liste blanche.")
+		end
+	else
+		response:send(405, "Méthode non autorisée.")
+	end
+end
+
+HttpService:createServer(handleRequest)
